@@ -5,17 +5,17 @@ from collections import deque
 from abc import ABC, abstractmethod
 import numpy as np
 
-class ObjectDetection(ABC):
+class EfficientObjectDetection(ABC):
     def __init__(self, stream_url):
         self.stream_url = stream_url
         self.frames = []
         self.results = {'frames': deque(maxlen=20), 'results': deque(maxlen=20)}
 
-    def start_stream(self):
-        stream_thread = threading.Thread(target=self.run_frame)
+    def start_stream(self, grid_type):
+        stream_thread = threading.Thread(target=self.run_frame, args=(grid_type,))
         stream_thread.start()
 
-    def run_frame(self):
+    def run_frame(self, grid_type):
         cap = cv2.VideoCapture(self.stream_url)
         fps = cap.get(cv2.CAP_PROP_FPS)
         while True:
@@ -23,6 +23,10 @@ class ObjectDetection(ABC):
             if not ret:
                 break
             self.frames.append(frame)
+            if len(self.frames) > grid_type:
+                grid_frames, result = self.grid_inference(grid_type)
+                self.results['frames'].extend(grid_frames)
+                self.results['results'].extend(result)
             time.sleep(1 / fps)
 
     @abstractmethod
@@ -98,17 +102,6 @@ class ObjectDetection(ABC):
                 grid_image = np.vstack((grid_image, row_image))
 
         return grid_image
-
-    def start_engine(self, grid_type):
-        engine_thread = threading.Thread(target=self.engine, args=(grid_type,))
-        engine_thread.start()
-
-    def engine(self, grid_type):
-        while True:
-            grid_frames, result = self.grid_inference(grid_type)
-            self.results['frames'].extend(grid_frames)
-            self.results['results'].extend(result)
-            time.sleep(0.02)
 
     def get_result(self):
         return self.results['frames'].popleft(), self.results['results'].popleft()
