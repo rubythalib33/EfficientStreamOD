@@ -24,10 +24,13 @@ class EfficientObjectDetection(ABC):
                 break
             self.frames.append(frame)
             if len(self.frames) > grid_type:
+                t0 = time.time()
                 grid_frames, result = self.grid_inference(grid_type)
                 self.results['frames'].extend(grid_frames)
                 self.results['results'].extend(result)
-            time.sleep(1 / fps)
+                t1 = time.time()
+                print(f"processing {grid_type} frames took {t1-t0:.3f} seconds.")
+            time.sleep(0.02)
 
     @abstractmethod
     def inference(self, x):
@@ -104,7 +107,13 @@ class EfficientObjectDetection(ABC):
         return grid_image
 
     def get_result(self):
-        return self.results['frames'].popleft(), self.results['results'].popleft()
+        try:
+            return self.results['frames'].popleft(), self.results['results'].popleft()
+        except IndexError:
+            return None, None
 
     def get_frame(self):
-        return self.results['frames'].popleft()
+        try:
+            return self.results['frames'].popleft()
+        except IndexError:
+            return None
