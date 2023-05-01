@@ -100,7 +100,7 @@ if __name__ == '__main__':
     input_shape = tuple(map(int, args.input_shape.split(',')))
 
     yolox = YOLOX(args.model, args.image_path, input_shape, args.score_thr)
-    yolox.start_stream(grid_type=9)
+    yolox.start_stream(grid_type=4)
     time.sleep(1)
     while True:
         img,dets = yolox.get_result()
