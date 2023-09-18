@@ -25,9 +25,9 @@ This code is tested using Ryzen 7 5000 series Laptop CPU to run the object detec
 
 | Grid Type | Number of Frames Processed | Inference Speed |
 |-----------|----------------------------|-----------------|
-| 1(no grid)| 1                          | 0.07ms          |
-| 4         | 4                          | 0.08ms          |
-| 9         | 9                          | 0.1ms           |
+| 1(no grid)| 1                          | 0.07s          |
+| 4         | 4                          | 0.08s          |
+| 9         | 9                          | 0.1s           |
 
 #### Conclusion
 Process the object detection using more grid will more optimize the performance, but there's a cost of the optimization that more grid you use, the small object in a frame cannot be seen by the AI, and for my experimentation the best result I get is in 4 grid method, because the 4 grid one is still has a stable detection

@@ -27,7 +27,7 @@ class EfficientObjectDetection(ABC):
                 t0 = time.time()
                 grid_frames, result = self.grid_inference(grid_type)
                 self.results['frames'].extend(grid_frames)
-                self.results['results'].extend(result)
+                self.results['results'].extend([result] if grid_type == 1 else result)
                 t1 = time.time()
                 print(f"processing {grid_type} frames took {t1-t0:.3f} seconds.")
             time.sleep(0.02)

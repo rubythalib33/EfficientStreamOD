@@ -161,3 +161,4 @@ cython_debug/
 .vscode
 *.onnx
 *.mp4
+sample/efficientstreamod
